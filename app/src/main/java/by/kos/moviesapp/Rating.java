@@ -22,4 +22,12 @@ public class Rating {
   public String getImdb() {
     return imdb;
   }
+
+  @Override
+  public String toString() {
+    return "Rating{" +
+        "kp='" + kp + '\'' +
+        ", imdb='" + imdb + '\'' +
+        '}';
+  }
 }

@@ -55,4 +55,16 @@ public class Movie {
   public Poster getPoster() {
     return poster;
   }
+
+  @Override
+  public String toString() {
+    return "Movie{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", description='" + description + '\'' +
+        ", year=" + year +
+        ", rating=" + rating +
+        ", poster=" + poster +
+        '}';
+  }
 }
