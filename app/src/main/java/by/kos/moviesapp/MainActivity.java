@@ -3,25 +3,25 @@ package by.kos.moviesapp;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.lifecycle.ViewModelProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+  private MainViewModel viewModel;
+  private static final String TAG = "MainActivity";
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ApiFactory.apiService.loadMovies()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(movieResponse -> {
-              Log.d("MainActivity", movieResponse.toString());
-            },
-            throwable -> {
-              Log.d("MainActivity", throwable.getMessage());
-            });
 
+    viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+    viewModel.getMovies().observe(this, movies -> {
+      Log.d(TAG, movies.toString());
+    });
+    viewModel.loadMovies();
   }
 }
