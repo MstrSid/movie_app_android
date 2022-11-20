@@ -1,26 +1,29 @@
 package by.kos.moviesapp;
 
-import android.util.Log;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
   private MainViewModel viewModel;
-  private static final String TAG = "MainActivity";
+  private RecyclerView rvMovies;
+  private MoviesAdapter moviesAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    rvMovies = findViewById(R.id.rvMovies);
+    moviesAdapter = new MoviesAdapter();
+    rvMovies.setAdapter(moviesAdapter);
+    rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
 
     viewModel = new ViewModelProvider(this).get(MainViewModel.class);
     viewModel.getMovies().observe(this, movies -> {
-      Log.d(TAG, movies.toString());
+      moviesAdapter.setMovieList(movies);
     });
     viewModel.loadMovies();
   }

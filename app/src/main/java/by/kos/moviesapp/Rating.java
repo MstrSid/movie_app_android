@@ -5,21 +5,21 @@ import com.google.gson.annotations.SerializedName;
 public class Rating {
 
   @SerializedName("kp")
-  private String kp;
+  private Double kp;
 
   @SerializedName("imdb")
-  private String imdb;
+  private Double imdb;
 
-  public Rating(String kp, String imdb) {
+  public Rating(Double kp, Double imdb) {
     this.kp = kp;
     this.imdb = imdb;
   }
 
-  public String getKp() {
+  public Double getKp() {
     return kp;
   }
 
-  public String getImdb() {
+  public Double getImdb() {
     return imdb;
   }
 
