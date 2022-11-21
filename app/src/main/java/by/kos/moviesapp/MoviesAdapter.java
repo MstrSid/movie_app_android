@@ -17,10 +17,15 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
   private List<Movie> movieList = new ArrayList<>();
+  private OnReachEndListener onReachEndListener;
 
   public void setMovieList(List<Movie> movieList) {
     this.movieList = movieList;
     notifyDataSetChanged();
+  }
+
+  public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
+    this.onReachEndListener = onReachEndListener;
   }
 
   @NonNull
@@ -51,6 +56,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     Glide.with(holder.itemView).load(movie.getPoster().getUrl()).into(holder.ivPoster);
     holder.tvRating.setText(String.valueOf(Math.round(rating * 10.0) / 10.0));
     holder.tvRating.setBackground(background);
+
+    if (position >= movieList.size() - 10 && onReachEndListener != null) {
+      onReachEndListener.onReachEnd();
+    }
+  }
+
+
+  interface OnReachEndListener {
+
+    void onReachEnd();
   }
 
   @Override

@@ -17,26 +17,44 @@ public class MainViewModel extends AndroidViewModel {
 
   public static final String TAG = "MainViewModel";
   private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+  private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
   private final CompositeDisposable compositeDisposable = new CompositeDisposable();
   private int page = 1;
 
   public MainViewModel(@NonNull Application application) {
+
     super(application);
+    loadMovies();
   }
 
   public LiveData<List<Movie>> getMovies() {
     return movies;
   }
 
+  public LiveData<Boolean> getIsLoading() {
+    return isLoading;
+  }
+
   public void loadMovies() {
+    Boolean loading = isLoading.getValue();
+    if (loading != null && loading) {
+      return;
+    }
     Disposable disposable = ApiFactory.getApiService()
         .loadMovies(page)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(d -> isLoading.setValue(true))
+        .doAfterTerminate(() -> isLoading.setValue(false))
         .subscribe(
             movieResponse -> {
+              List<Movie> loadedMovies = movies.getValue();
+              if (loadedMovies != null) {
+                loadedMovies.addAll(movieResponse.getMovies());
+              } else {
+                movies.setValue(movieResponse.getMovies());
+              }
               page++;
-              movies.setValue(movieResponse.getMovies());
             },
             throwable -> {
               Log.d(TAG, throwable.toString());
