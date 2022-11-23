@@ -1,5 +1,6 @@
 package by.kos.moviesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -41,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
     moviesAdapter.setOnReachEndListener(() -> {
       viewModel.loadMovies();
     });
+
+    moviesAdapter.setOnClickItem(movie -> {
+      Intent intent = MovieDetailActivity.newIntent(this, movie);
+      startActivity(intent);
+    });
+
   }
 
   private void initViews() {
