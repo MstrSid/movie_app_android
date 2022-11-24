@@ -9,4 +9,7 @@ public interface ApiService {
   @GET("movie?rating=kp&search=6-10&sortField=votes.kp&sortType=-1&limit=30&token=t")
   Single<MovieResponse> loadMovies(@Query("page") int page);
 
+  @GET("movie?token=t&field=id")
+  Single<TrailerResponse> loadTrailers(@Query("search") int id);
+
 }
