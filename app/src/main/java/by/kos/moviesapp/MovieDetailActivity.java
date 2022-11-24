@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
@@ -16,6 +17,9 @@ import java.net.URI;
 public class MovieDetailActivity extends AppCompatActivity {
 
   private static final String EXTRA_MOVIE = "movie";
+  private static final String TAG = "MovieDetailActivity";
+
+  private MovieDetailViewModel viewModel;
 
   private ImageView ivPoster;
   private TextView tvTitle;
@@ -26,21 +30,17 @@ public class MovieDetailActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movie_detail);
+    viewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
     initViews();
     Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
     Glide.with(this).load(movie.getPoster().getUrl()).into(ivPoster);
     tvTitle.setText(movie.getName());
     tvYear.setText(String.valueOf(movie.getYear()));
     tvDescription.setText(movie.getDescription());
-
-    ApiFactory.getApiService().loadTrailers(movie.getId()).subscribeOn(Schedulers.io()).observeOn(
-        AndroidSchedulers.mainThread()).subscribe(trailerResponse -> {
-      for (Trailer trailer: trailerResponse.getTrailerList().getTrailers()) {
-        Log.d("MovieDetailActivity",trailer.getName());
-        Log.d("MovieDetailActivity",trailer.getUrl());
-      }
-
-    }, throwable -> Log.d("MovieDetailActivity", throwable.getMessage()));
+    viewModel.loadTrailers(movie.getId());
+    viewModel.getTrailers().observe(this, trailers -> {
+      Log.d(TAG, trailers.toString());
+    });
   }
 
   public static Intent newIntent(Context context, Movie movie) {
