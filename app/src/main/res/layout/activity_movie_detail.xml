@@ -18,15 +18,17 @@
       app:layout_constraintTop_toTopOf="parent"
       tools:src="@tools:sample/avatars" />
 
-    <TextView
-      android:id="@+id/tvTitle"
-      android:textStyle="bold"
-      android:layout_width="match_parent"
+    <ImageView
+      android:id="@+id/ivFav"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:padding="8dp"
-      android:textSize="16sp"
+      android:layout_margin="16dp"
+      app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
+      app:layout_constraintEnd_toEndOf="@+id/ivPoster"
       app:layout_constraintTop_toBottomOf="@+id/ivPoster"
-      tools:text="Title" />
+      tools:srcCompat="@android:drawable/btn_star_big_on"
+      android:contentDescription="fav movie icon" />
+
     <TextView
       android:id="@+id/tvYear"
       android:layout_width="match_parent"
@@ -44,6 +46,26 @@
       android:textSize="16sp"
       app:layout_constraintTop_toBottomOf="@+id/tvYear"
       tools:text="Movie description" />
+    <TextView
+      android:id="@+id/tvTitle"
+      android:textStyle="bold"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:textSize="16sp"
+      app:layout_constraintTop_toBottomOf="@+id/ivPoster"
+      tools:text="Title" />
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rvReviews"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:nestedScrollingEnabled="false"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/rvTrailers"
+      tools:listitem="@layout/review_item" />
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rvTrailers"
       android:layout_width="match_parent"
@@ -53,16 +75,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/tvDescription"
       tools:listitem="@layout/trailer_item" />
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/rvReviews"
-      android:layout_marginTop="8dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:nestedScrollingEnabled="false"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/rvTrailers"
-      tools:listitem="@layout/review_item" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 

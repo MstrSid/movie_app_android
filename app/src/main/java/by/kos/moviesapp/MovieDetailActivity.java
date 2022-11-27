@@ -2,16 +2,19 @@ package by.kos.moviesapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -32,6 +35,7 @@ public class MovieDetailActivity extends AppCompatActivity {
   private TrailerAdapter trailerAdapter;
   private RecyclerView rvReviews;
   private ReviewAdapter reviewAdapter;
+  private ImageView ivFav;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     viewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
     initViews();
+
+    Drawable starOff = ContextCompat.getDrawable(MovieDetailActivity.this,
+        android.R.drawable.star_big_off);
+    Drawable starOn = ContextCompat.getDrawable(MovieDetailActivity.this,
+        android.R.drawable.star_big_on);
 
     Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
 
@@ -68,6 +77,36 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     viewModel.loadReviews(movie.getId());
     viewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviewList(reviews));
+
+    viewModel.getFavMovie(movie.getId()).observe(this, movieFromDB -> {
+      if (movieFromDB == null) {
+        ivFav.setImageDrawable(starOff);
+        ivFav.setOnClickListener(view -> {
+          viewModel.addFavMovie(movie);
+        });
+      } else {
+        ivFav.setImageDrawable(starOn);
+        ivFav.setOnClickListener(view -> {
+          viewModel.removeFavMovie(movie.getId());
+        });
+      }
+    });
+
+    viewModel.getAdded().observe(this, added -> {
+      if(added){
+        Snackbar.make(this, getWindow().getDecorView(), "Added", Snackbar.LENGTH_SHORT).show();
+      } else {
+        Snackbar.make(this, getWindow().getDecorView(), "Error", Snackbar.LENGTH_SHORT).show();
+      }
+    });
+
+    viewModel.getRemoved().observe(this, removed -> {
+      if(removed){
+        Snackbar.make(this, getWindow().getDecorView(), "Removed", Snackbar.LENGTH_SHORT).show();
+      } else {
+        Snackbar.make(this, getWindow().getDecorView(), "Error", Snackbar.LENGTH_SHORT).show();
+      }
+    });
   }
 
   public static Intent newIntent(Context context, Movie movie) {
@@ -83,5 +122,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     tvDescription = findViewById(R.id.tvDescription);
     rvTrailers = findViewById(R.id.rvTrailers);
     rvReviews = findViewById(R.id.rvReviews);
+    ivFav = findViewById(R.id.ivFav);
   }
 }

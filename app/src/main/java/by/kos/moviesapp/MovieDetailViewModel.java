@@ -2,10 +2,12 @@ package by.kos.moviesapp;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.google.android.material.snackbar.Snackbar;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -19,6 +21,19 @@ public class MovieDetailViewModel extends AndroidViewModel {
   private final MutableLiveData<List<Trailer>> trailers = new MutableLiveData<>();
   private final MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
 
+  private final MutableLiveData<Boolean> added = new MutableLiveData<>();
+  private final MutableLiveData<Boolean> removed = new MutableLiveData<>();
+
+  private final MovieDao movieDao;
+
+  public LiveData<Boolean> getAdded() {
+    return added;
+  }
+
+  public LiveData<Boolean> getRemoved() {
+    return removed;
+  }
+
   public LiveData<List<Review>> getReviews() {
     return reviews;
   }
@@ -29,6 +44,35 @@ public class MovieDetailViewModel extends AndroidViewModel {
 
   public MovieDetailViewModel(@NonNull Application application) {
     super(application);
+    movieDao = MovieDatabase.getInstance(getApplication()).movieDao();
+  }
+
+  public LiveData<Movie> getFavMovie(int id) {
+    return movieDao.getFavMovie(id);
+  }
+
+  public void addFavMovie(Movie movie) {
+    Disposable disposable = movieDao.insertMovie(movie)
+        .subscribeOn(Schedulers.io())
+        .subscribe(() -> {
+              added.postValue(true);
+            },
+            throwable -> {
+              added.postValue(false);
+            });
+    compositeDisposable.add(disposable);
+  }
+
+  public void removeFavMovie(int id) {
+    Disposable disposable = movieDao.removeMovie(id)
+        .subscribeOn(Schedulers.io())
+        .subscribe(() -> {
+              removed.postValue(true);
+            },
+            throwable -> {
+              removed.postValue(false);
+            });
+    compositeDisposable.add(disposable);
   }
 
   public void loadTrailers(int id) {
