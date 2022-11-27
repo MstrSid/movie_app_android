@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
   private RecyclerView rvMovies;
   private MoviesAdapter moviesAdapter;
   private ProgressBar progressBar;
+  private FloatingActionButton fab;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +50,16 @@ public class MainActivity extends AppCompatActivity {
       startActivity(intent);
     });
 
+    fab.setOnClickListener(view -> {
+      Intent intent = MovieFavActivity.newIntent(this);
+      startActivity(intent);
+    });
+
   }
 
   private void initViews() {
     rvMovies = findViewById(R.id.rvMovies);
     progressBar = findViewById(R.id.progressBar);
+    fab = findViewById(R.id.floatingActionButton);
   }
 }

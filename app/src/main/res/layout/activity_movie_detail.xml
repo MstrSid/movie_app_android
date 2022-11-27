@@ -27,7 +27,7 @@
       app:layout_constraintEnd_toEndOf="@+id/ivPoster"
       app:layout_constraintTop_toBottomOf="@+id/ivPoster"
       tools:srcCompat="@android:drawable/btn_star_big_on"
-      android:contentDescription="fav movie icon" />
+      android:contentDescription="@string/fav_movie_icon" />
 
     <TextView
       android:id="@+id/tvYear"

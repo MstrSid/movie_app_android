@@ -1,4 +1,7 @@
 <resources>
   <string name="app_name">Movies App</string>
   <string name="poster">poster</string>
+  <string name="fav_movies">fav movies</string>
+  <string name="fav_movie_icon">fav movie icon</string>
+  <string name="play_icon">play icon</string>
 </resources>
